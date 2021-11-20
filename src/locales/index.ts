@@ -1,5 +1,3 @@
-import { locale, addLocale } from "primereact/api";
-
 export const ruCalendarLocale = {
   firstDayOfWeek: 1,
   dayNames: [
@@ -46,7 +44,3 @@ export const ruCalendarLocale = {
   dateFormat: "yyyy-mm-dd",
   weekHeader: "Нд",
 };
-
-addLocale("ru", ruCalendarLocale);
-
-export const ru = locale("ru");

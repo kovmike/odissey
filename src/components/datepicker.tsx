@@ -5,7 +5,7 @@ import "primereact/resources/primereact.css";
 import { useStore } from "effector-react";
 import { $dateFinish, $dateStart, setStartTime, setFinishTime } from "./model";
 import { timePredicator } from "../utils";
-import { ru } from "../locales";
+
 
 export const DatePicker: React.FC = () => {
   const start = useStore($dateStart);
