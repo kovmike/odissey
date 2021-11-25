@@ -7,13 +7,13 @@ import {
   Area,
   Tooltip,
 } from "recharts";
-import { $chartData } from "./model";
+import { $combinedChartData } from "./model";
 
 export const Chart = () => {
-  const data = useStore($chartData);
+  const data = useStore($combinedChartData);
   return (
     <AreaChart
-      width={730}
+      width={800}
       height={250}
       data={data}
       margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
@@ -39,7 +39,7 @@ export const Chart = () => {
         fillOpacity={1}
         fill="url(#colorUv)"
       />
-      <Area
+      {/* <Area
         type="monotone"
         dataKey="fact"
         stroke="#82ca9d"
@@ -52,7 +52,7 @@ export const Chart = () => {
         stroke="#82ca9d"
         fillOpacity={1}
         fill="url(#colorAmt)"
-      />
+      /> */}
     </AreaChart>
   );
 };

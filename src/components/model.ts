@@ -32,4 +32,17 @@ export const $dateLine: Store<string[]> = combine(
   }
 );
 
+export const $combinedChartData = combine(
+  $dateLine,
+  $startWieght,
+  $goal,
+  (dateLine, startWeight, goal) => {
+    return dateLine.map((date) => ({
+      name: date,
+      goal: ~~(Math.random() * 10),
+      startWeight,
+    }));
+  }
+);
+
 $dateLine.watch(console.log);
