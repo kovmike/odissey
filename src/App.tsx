@@ -12,18 +12,16 @@ import { HomePage } from "./pages/Home";
 addLocale("ru", ruCalendarLocale);
 locale("ru");
 export const App: React.FC = () => {
-  const user = useStore($loggedUser);
   const navigate = useNavigate();
- 
+  const user = useStore($loggedUser);
+
   useEffect(() => {
-    if (!user) {
-      navigate("/auth");
-    }
-   
+    if (!user) navigate("/auth");
   }, []);
- 
+
   return (
     <Routes>
+      <Route path="/auth" element={<Auth />} />
       <Route
         path="/"
         element={
@@ -32,7 +30,6 @@ export const App: React.FC = () => {
           </RequireAuth>
         }
       />
-      <Route path="/auth" element={<Auth />} />
     </Routes>
   );
 };

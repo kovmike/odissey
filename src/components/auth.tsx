@@ -18,11 +18,9 @@ export const AuthForm = () => {
   const pending = useStore(pendings);
 
   useEffect(() => {
-    if (!!user) {
-      navigate("/", { replace: true });
-    }
+    if (!!user) navigate("/", { replace: true });
   }, [user]);
-
+  //TODO спинер прикрутить
   if (pending) return <div>Loading...</div>;
 
   return (
