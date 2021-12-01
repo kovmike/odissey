@@ -1,3 +1,3 @@
-export const HomePage: React.FC = () => {
-  return <div>home</div>;
+export const HomePage: React.FC<{ user: any }> = ({ user }) => {
+  return <div>{user}</div>;
 };
