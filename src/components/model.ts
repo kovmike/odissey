@@ -6,6 +6,8 @@ const root = createDomain("root");
 
 export const setStartTime = root.createEvent<Date | null>();
 export const setFinishTime = root.createEvent<Date | null>();
+export const setStartWeight = root.createEvent<number>();
+export const setGoal = root.createEvent<number>();
 
 export const $chartData = root.createStore<Point[]>(data);
 export const $startWieght = root.createStore<number>(0);
@@ -15,6 +17,8 @@ export const $dateFinish = root.createStore<Date | null>(null);
 
 $dateStart.on(setStartTime, (_, start) => start);
 $dateFinish.on(setFinishTime, (_, finish) => finish);
+$startWieght.on(setStartWeight, (_, weight) => weight);
+$goal.on(setGoal, (_, goal) => goal);
 
 export const $dateLine: Store<string[]> = combine(
   $dateStart,
@@ -27,7 +31,6 @@ export const $dateLine: Store<string[]> = combine(
       timeCode.push(new Date(timeCounter).toLocaleString("ru"));
       timeCounter = timeCounter + 24 * 60 * 60 * 1000;
     }
-
     return timeCode;
   }
 );
@@ -37,12 +40,12 @@ export const $combinedChartData = combine(
   $startWieght,
   $goal,
   (dateLine, startWeight, goal) => {
-    return dateLine.map((date) => ({
+    return dateLine.map((date, index, dl) => ({
       name: date,
-      goal: ~~(Math.random() * 10),
+      goal: startWeight - ((startWeight - goal) / dl.length) * index,
       startWeight,
     }));
   }
 );
 
-$dateLine.watch(console.log);
+//$startWieght.watch(console.log);
