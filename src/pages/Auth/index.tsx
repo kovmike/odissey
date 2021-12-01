@@ -2,7 +2,7 @@ import { AuthForm } from "../../components/auth";
 
 export const Auth: React.FC = () => {
   return (
-    <div>
+    <div className={'auth-form'}>
       <AuthForm />
     </div>
   );
