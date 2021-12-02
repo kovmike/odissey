@@ -1,6 +1,7 @@
 import { useStore } from "effector-react";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
+import { ProgressSpinner } from "primereact/progressspinner";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import {
@@ -20,8 +21,16 @@ export const AuthForm = () => {
   useEffect(() => {
     if (!!user) navigate("/", { replace: true });
   }, [user]);
-  //TODO спинер прикрутить
-  if (pending) return <div>Loading...</div>;
+
+  if (pending)
+    return (
+      <ProgressSpinner
+        style={{ width: "150px", height: "150px" }}
+        strokeWidth="8"
+        fill="var(--surface-ground)"
+        animationDuration=".5s"
+      />
+    );
 
   return (
     <form>

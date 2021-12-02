@@ -1,4 +1,3 @@
-import { FirebaseApp } from "@firebase/app";
 import { combine, createDomain, guard, sample } from "effector";
 import {
   getAuth,
