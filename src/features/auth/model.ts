@@ -33,11 +33,13 @@ export const setAuthData = authRoot.createEvent<{ [key: string]: string }>();
 export const logIn = authRoot.createEvent<void>();
 const errorDetected = authRoot.createEvent<boolean>();
 
-export const signUpFx = authRoot.createEffect<{ [key: string]: string }, any, any>(
-  async ({ user, password }) => {
-    return await firebaseSignUp({ app, user, password });
-  }
-);
+export const signUpFx = authRoot.createEffect<
+  { [key: string]: string },
+  any,
+  any
+>(async ({ user, password }) => {
+  return await firebaseSignUp({ app, user, password });
+});
 
 export const signInFx = authRoot.createEffect<
   { [key: string]: string },
@@ -92,4 +94,4 @@ sample({
   target: errorDetected,
 });
 
-$loggedUser.watch(console.log);
+//$loggedUser.watch(console.log);

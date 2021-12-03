@@ -26,14 +26,16 @@ $userGoal.on(getExistsUserDataFx.doneData, (_, goalData) => goalData.val());
 
 sample({
   source: signUpFx.doneData,
-  fn: ({ user }) => user.email.split("@")[0].replace(/\./g, ""),
+  fn: ({ user }) => user.uid,
   target: setNewUserFx,
 });
 
 sample({
   source: signInFx.doneData,
   fn: ({ user }) => {
-    return user.email!.split("@")[0].replace(/\./g, "");
+    console.log(user.uid);
+
+    return user.uid;
   },
   target: getExistsUserDataFx,
 });
@@ -44,6 +46,6 @@ sample({
   target: getExistsUserDataFx,
 });
 
-getExistsUserDataFx.doneData.watch((data) => {
-  if (data.exists()) console.log(data.val());
-});
+// getExistsUserDataFx.doneData.watch((data) => {
+//   if (data.exists()) console.log(data.val());
+// })
