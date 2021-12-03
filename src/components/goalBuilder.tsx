@@ -57,7 +57,7 @@ export const GoalBuilder: React.FC = () => {
         }}
         step={0.25}
         showButtons
-        min={50}
+        min={0}
         max={200}
       />
       <h3>nessesary weight </h3>
@@ -65,7 +65,7 @@ export const GoalBuilder: React.FC = () => {
         value={goal}
         step={0.25}
         showButtons
-        min={50}
+        min={0}
         max={startWeight}
         onChange={(e) => {
           if (!isNaN(e.value)) setGoal(e.value);

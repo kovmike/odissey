@@ -58,8 +58,8 @@ export const $errorAuth = authRoot.createStore<boolean>(false);
  */
 
 $loggedUser
-  .on(signUpFx.doneData, (_, { user }) => user.email)
-  .on(signInFx.doneData, (_, { user }) => user.email);
+  .on(signUpFx.doneData, (_, { user }) => user)
+  .on(signInFx.doneData, (_, { user }) => user);
 
 $authData.on(setAuthData, (data, payload) => ({ ...data, ...payload }));
 
