@@ -12,8 +12,9 @@ import {
   setFinishTime,
   setStartWeight,
   $startWieght,
-  $goal,
-  setGoal,
+  $goalWeight,
+  setGoalWeight,
+  setEmptyGoal,
 } from "./model";
 import { timePredicator } from "../utils";
 
@@ -21,7 +22,12 @@ export const GoalBuilder: React.FC = () => {
   const startDate = useStore($dateStart);
   const finishDate = useStore($dateFinish);
   const startWeight = useStore($startWieght);
-  const goal = useStore($goal);
+  const goalWeight = useStore($goalWeight);
+
+  const setGoal = (e: any) => {
+    e.preventDefault();
+    setEmptyGoal();
+  };
 
   return (
     <form>
@@ -62,18 +68,19 @@ export const GoalBuilder: React.FC = () => {
       />
       <h3>nessesary weight </h3>
       <InputNumber
-        value={goal}
+        value={goalWeight}
         step={0.25}
         showButtons
         min={0}
         max={startWeight}
         onChange={(e) => {
-          if (!isNaN(e.value)) setGoal(e.value);
+          if (!isNaN(e.value)) setGoalWeight(e.value);
         }}
         onKeyDown={(e) => {
           if (!/[\d.,]/g.test(e.key)) e.preventDefault();
         }}
       />
+      <Button onClick={setGoal}>Создать</Button>
     </form>
   );
 };

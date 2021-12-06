@@ -1,8 +1,5 @@
-import { useState } from "react";
 import { useStore } from "effector-react";
-import { Button } from "primereact/button";
-
-import { $userGoal, testSet } from "../../features/goals/model";
+import { $userGoal } from "../../features/goals/model";
 import { NoGoal } from "../../components/noGoalNotification";
 
 export const HomePage: React.FC<{ user: any }> = ({ user }) => {
@@ -21,7 +18,6 @@ export const HomePage: React.FC<{ user: any }> = ({ user }) => {
       <span>{user.email}</span>
       <hr />
       {prepareGoalData(goal)}
-      <Button onClick={() => testSet()}>test</Button>
     </div>
   );
 };

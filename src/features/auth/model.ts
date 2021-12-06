@@ -4,6 +4,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   UserCredential,
+  User,
 } from "firebase/auth";
 import { app } from "../../assets/firebaseConfig";
 import { SingUpData } from "./types";
@@ -49,7 +50,7 @@ export const signInFx = authRoot.createEffect<
   return await firebaseSignIn({ app, user, password });
 });
 
-export const $loggedUser = authRoot.createStore<any>(null);
+export const $loggedUser = authRoot.createStore<User | null>(null);
 export const $authData = authRoot.createStore<{ [key: string]: string }>({});
 export const $errorAuth = authRoot.createStore<boolean>(false);
 
@@ -94,4 +95,4 @@ sample({
   target: errorDetected,
 });
 
-//$loggedUser.watch(console.log);
+$loggedUser.watch(console.log);

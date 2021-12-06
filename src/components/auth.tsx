@@ -27,7 +27,6 @@ export const AuthForm = () => {
       <ProgressSpinner
         style={{ width: "150px", height: "150px" }}
         strokeWidth="8"
-        fill="var(--surface-ground)"
         animationDuration=".5s"
       />
     );
