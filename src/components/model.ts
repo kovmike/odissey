@@ -1,5 +1,5 @@
-import { createStore, createDomain, combine, Store, sample } from "effector";
-import { child, get, ref, set } from "firebase/database";
+import { createDomain, combine, Store, sample } from "effector";
+import { child, ref, set, get } from "firebase/database";
 import { dataBase } from "../assets/firebaseConfig";
 import { $loggedUser } from "../features/auth/model";
 import { data } from "./data";
@@ -22,14 +22,21 @@ export const setEmptyGoal = root.createEvent<void>();
 /**effects */
 export const setEmptyGoalFx = root.createEffect<
   { path: string; data: any },
-  any,
+  Promise<void>,
   any
 >(async ({ path, data }) => {
   return await setter(path, data);
 });
 
+export const getChartDataFx = root.createEffect(
+  async ({ path }: { path: string }) => {
+    console.log(path);
+    return await get(child(ref(dataBase), `users/${path}`));
+  }
+);
+
 /**stores */
-export const $chartData = root.createStore<Point[]>(data);
+export const $chartData = root.createStore<Point[] | null>(null);
 export const $startWieght = root.createStore<number>(0);
 export const $goalWeight = root.createStore<number>(0);
 export const $dateStart = root.createStore<Date | null>(null);
@@ -39,6 +46,7 @@ $dateStart.on(setStartTime, (_, start) => start);
 $dateFinish.on(setFinishTime, (_, finish) => finish);
 $startWieght.on(setStartWeight, (_, weight) => weight);
 $goalWeight.on(setGoalWeight, (_, goalWeight) => goalWeight);
+$chartData.on(getChartDataFx.doneData, (_, data) => Object.values(data.val()));
 
 export const $dateLine: Store<string[]> = combine(
   $dateStart,
@@ -51,7 +59,7 @@ export const $dateLine: Store<string[]> = combine(
       timeCode.push(new Date(timeCounter).toLocaleString("ru"));
       timeCounter = timeCounter + 24 * 60 * 60 * 1000;
     }
-    return timeCode.map((date) => date.split(",")[0]);
+    return timeCode.map((date) => date.split(",")[0].replace(/\./g, "-"));
   }
 );
 
@@ -82,4 +90,9 @@ sample({
   target: setEmptyGoalFx,
 });
 
+sample({
+  source: setEmptyGoalFx.done,
+  fn: ({ params }) => params,
+  target: getChartDataFx,
+});
 //$startWieght.watch(console.log);

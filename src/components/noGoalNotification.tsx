@@ -22,7 +22,7 @@ export const NoGoal: React.FC = () => {
         style={{ width: "50vw" }}
         onHide={() => setShowGoalBuilder(false)}
       >
-        <GoalBuilder />
+        <GoalBuilder setCloseDialog={setShowGoalBuilder} />
       </Dialog>
     </div>
   );

@@ -18,7 +18,11 @@ import {
 } from "./model";
 import { timePredicator } from "../utils";
 
-export const GoalBuilder: React.FC = () => {
+interface GoalBuilderProps {
+  setCloseDialog: (show: boolean) => void;
+}
+
+export const GoalBuilder: React.FC<GoalBuilderProps> = ({ setCloseDialog }) => {
   const startDate = useStore($dateStart);
   const finishDate = useStore($dateFinish);
   const startWeight = useStore($startWieght);
@@ -27,6 +31,7 @@ export const GoalBuilder: React.FC = () => {
   const setGoal = (e: any) => {
     e.preventDefault();
     setEmptyGoal();
+    setCloseDialog(false);
   };
 
   return (
