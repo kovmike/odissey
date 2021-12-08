@@ -11,7 +11,7 @@ import {
   setStartTime,
   setFinishTime,
   setStartWeight,
-  $startWieght,
+  $startWeight,
   $goalWeight,
   setGoalWeight,
   setEmptyGoal,
@@ -25,7 +25,7 @@ interface GoalBuilderProps {
 export const GoalBuilder: React.FC<GoalBuilderProps> = ({ setCloseDialog }) => {
   const startDate = useStore($dateStart);
   const finishDate = useStore($dateFinish);
-  const startWeight = useStore($startWieght);
+  const startWeight = useStore($startWeight);
   const goalWeight = useStore($goalWeight);
 
   const setGoal = (e: any) => {

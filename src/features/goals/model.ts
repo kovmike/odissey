@@ -1,22 +1,25 @@
 import { createDomain, sample } from "effector";
-import { child, get, ref, set } from "firebase/database";
-import { dataBase } from "../../assets/firebaseConfig";
+import { DataSnapshot } from "firebase/database";
+import { getter, setter } from "../../assets/firebaseUtils";
 import { signUpFx, signInFx } from "../auth/model";
 
 const goal = createDomain();
 
 export const setNewUserFx = goal.createEffect(async (user: string) => {
-  const dbRef = ref(dataBase, "users/" + `${user}`);
-  return await set(dbRef, {
+  return await setter(`${user}`, {
     username: "Valera",
     user,
+    startWeight: 0,
     goal: { startWeight: 0 },
   });
 });
 
-export const getExistsUserDataFx = goal.createEffect(async (user: string) => {
-  const dbRef = ref(dataBase);
-  return await get(child(dbRef, `users/${user}`));
+export const getExistsUserDataFx = goal.createEffect<
+  string,
+  DataSnapshot,
+  Error
+>(async (user: string) => {
+  return await getter(`users/${user}`);
 });
 
 export const $userGoal = goal.createStore<any>(null);

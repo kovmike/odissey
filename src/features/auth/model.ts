@@ -95,4 +95,4 @@ sample({
   target: errorDetected,
 });
 
-$loggedUser.watch(console.log);
+//$loggedUser.watch(console.log);

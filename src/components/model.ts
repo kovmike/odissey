@@ -1,14 +1,8 @@
 import { createDomain, combine, Store, sample } from "effector";
-import { child, ref, set, get } from "firebase/database";
-import { dataBase } from "../assets/firebaseConfig";
+import { getter, setter } from "../assets/firebaseUtils";
 import { $loggedUser } from "../features/auth/model";
-import { data } from "./data";
+import { getExistsUserDataFx } from "../features/goals/model";
 import { Point } from "./types";
-
-const setter = (path: string, data: any) => {
-  const dbRef = ref(dataBase, "users/" + `${path}`);
-  return set(dbRef, data);
-};
 
 const root = createDomain("root");
 
@@ -30,23 +24,26 @@ export const setEmptyGoalFx = root.createEffect<
 
 export const getChartDataFx = root.createEffect(
   async ({ path }: { path: string }) => {
-    console.log(path);
-    return await get(child(ref(dataBase), `users/${path}`));
+    return await getter(`users/${path}`);
   }
 );
 
 /**stores */
 export const $chartData = root.createStore<Point[] | null>(null);
-export const $startWieght = root.createStore<number>(0);
+export const $startWeight = root.createStore<number>(0);
 export const $goalWeight = root.createStore<number>(0);
 export const $dateStart = root.createStore<Date | null>(null);
 export const $dateFinish = root.createStore<Date | null>(null);
 
 $dateStart.on(setStartTime, (_, start) => start);
 $dateFinish.on(setFinishTime, (_, finish) => finish);
-$startWieght.on(setStartWeight, (_, weight) => weight);
+$startWeight.on(setStartWeight, (_, weight) => weight);
 $goalWeight.on(setGoalWeight, (_, goalWeight) => goalWeight);
-$chartData.on(getChartDataFx.doneData, (_, data) => Object.values(data.val()));
+$chartData
+  .on(getChartDataFx.doneData, (_, data) => Object.values(data.val()))
+  .on(getExistsUserDataFx.doneData, (_, data) =>
+    Object.values(data.val().goal)
+  );
 
 export const $dateLine: Store<string[]> = combine(
   $dateStart,
@@ -68,7 +65,7 @@ export const $combinedChartData = combine<
   number,
   number,
   { [x: string]: string }
->($dateLine, $startWieght, $goalWeight, (dateLine, startWeight, goal) => {
+>($dateLine, $startWeight, $goalWeight, (dateLine, startWeight, goal) => {
   return dateLine.reduce((acc: { [x: string]: any }, date, index, dl) => {
     acc[date] = {
       name: date,
@@ -79,8 +76,19 @@ export const $combinedChartData = combine<
   }, {});
 });
 
+export const $combinedUserData = combine(
+  $startWeight,
+  $goalWeight,
+  $dateFinish,
+
+  (startWeight, goalWeight, dateFinish) => ({
+    startWeight,
+    goalWeight,
+    dateFinish,
+  })
+);
+
 sample({
-  //TODO убрать "!""
   source: combine($loggedUser, $combinedChartData, (user, data) => ({
     user,
     data,
@@ -95,4 +103,4 @@ sample({
   fn: ({ params }) => params,
   target: getChartDataFx,
 });
-//$startWieght.watch(console.log);
+$chartData.watch(console.log);
