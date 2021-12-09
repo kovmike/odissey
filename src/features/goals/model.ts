@@ -44,3 +44,5 @@ sample({
   fn: ({ params }) => params,
   target: getExistsUserDataFx,
 });
+
+$userGoal.watch(console.log);

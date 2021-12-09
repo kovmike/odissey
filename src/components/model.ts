@@ -1,5 +1,5 @@
 import { createDomain, combine, Store, sample } from "effector";
-import { getter, setter } from "../assets/firebaseUtils";
+import { getter, setter, updater } from "../assets/firebaseUtils";
 import { $loggedUser } from "../features/auth/model";
 import { getExistsUserDataFx } from "../features/goals/model";
 import { Point } from "./types";
@@ -27,6 +27,14 @@ export const getChartDataFx = root.createEffect(
     return await getter(`users/${path}`);
   }
 );
+
+export const updateUserDataFx = root.createEffect<
+  { path: string; userData: any },
+  Promise<void>,
+  Error
+>(async ({ path, userData }) => {
+  return await updater(`${path}`, userData);
+});
 
 /**stores */
 export const $chartData = root.createStore<Point[] | null>(null);
@@ -80,7 +88,6 @@ export const $combinedUserData = combine(
   $startWeight,
   $goalWeight,
   $dateFinish,
-
   (startWeight, goalWeight, dateFinish) => ({
     startWeight,
     goalWeight,
@@ -99,8 +106,20 @@ sample({
 });
 
 sample({
+  clock: setEmptyGoalFx.done,
+  source: combine($loggedUser, $combinedUserData, (user, userData) => ({
+    path: `${user?.uid}/`,
+    userData,
+  })),
+  // fn:(c)=>c,
+  target: updateUserDataFx,
+});
+
+sample({
   source: setEmptyGoalFx.done,
   fn: ({ params }) => params,
   target: getChartDataFx,
 });
+
+//TODO Переписать updater
 $chartData.watch(console.log);
