@@ -1,7 +1,10 @@
+import { Button, Input, Spin } from "antd";
 import { useStore } from "effector-react";
-import { Button } from "primereact/button";
-import { InputText } from "primereact/inputtext";
-import { ProgressSpinner } from "primereact/progressspinner";
+import {
+  UserOutlined,
+  UnlockOutlined,
+  LoadingOutlined,
+} from "@ant-design/icons";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import {
@@ -25,39 +28,38 @@ export const AuthForm = () => {
   if (pending)
     return (
       <>
-      <ProgressSpinner
-        style={{ width: "150px", height: "150px" }}
-        strokeWidth="8"
-        animationDuration=".5s"
-     />
-       <span className="scha">Ща, ща, ща...</span>
-     </>
+        <Spin indicator={<LoadingOutlined style={{ fontSize: 150 }} spin />} />
+        <span className="scha">Ща, ща, ща...</span>
+      </>
     );
 
   return (
     <form>
       <h1>Вход/регистрация</h1>
-      <InputText
-        placeholder={"имя/емайл"}
+      <Input
+        placeholder="имя/емайл"
+        prefix={<UserOutlined className="site-form-item-icon" />}
         onChange={(e) => {
           setAuthData({ user: e.target.value });
         }}
       />
-      <InputText
-        placeholder={"паролъ"}
-        type="password"
+      <Input.Password
+        prefix={<UnlockOutlined />}
+        placeholder="паролъ"
         onChange={(e) => {
           setAuthData({ password: e.target.value });
         }}
       />
+
       {wrongPassword && <span style={{ color: "red" }}>неверные пароль</span>}
       <Button
+        type="primary"
         onClick={(e) => {
           e.preventDefault();
           logIn();
         }}
       >
-        LogIn
+        Войди
       </Button>
     </form>
   );

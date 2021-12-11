@@ -1,10 +1,9 @@
 import { Calendar } from "primereact/calendar";
 import { InputNumber } from "primereact/inputnumber";
 import { Button } from "primereact/button";
-import "primeicons/primeicons.css";
-import "primereact/resources/themes/lara-light-indigo/theme.css";
-import "primereact/resources/primereact.css";
 import { useStore } from "effector-react";
+import "moment/locale/ru";
+import locale from "antd/lib/date-picker/locale/ru_RU";
 import {
   $dateFinish,
   $dateStart,
@@ -17,6 +16,7 @@ import {
   setEmptyGoal,
 } from "./model";
 import { timePredicator } from "../utils";
+import { DatePicker } from "antd";
 
 interface GoalBuilderProps {
   setCloseDialog: (show: boolean) => void;
@@ -33,10 +33,17 @@ export const GoalBuilder: React.FC<GoalBuilderProps> = ({ setCloseDialog }) => {
     setEmptyGoal();
     setCloseDialog(false);
   };
-
+  //TODO разобраться с датами
   return (
     <form>
-      <h3>StartDate</h3>
+      <h3>Выбери период</h3>
+      <DatePicker.RangePicker
+        format={"DD MMMM yy"}
+        locale={locale}
+        onChange={(e, d) => {
+          console.log(d);
+        }}
+      />
       <Calendar
         hideOnDateTimeSelect
         placeholder={"- Начало -"}

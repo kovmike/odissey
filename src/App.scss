@@ -1,6 +1,4 @@
-@import "primeicons/primeicons.css";
-@import "primereact/resources/themes/lara-light-indigo/theme.css";
-@import "primereact/resources/primereact.css";
+@import "antd/dist/antd.css";
 
 .App {
   text-align: center;
@@ -12,7 +10,7 @@
 
 .scha {
   position: absolute;
-  margin-top: 68px;
+  margin-top: 62px;
   left: calc(50% - 40px);
   font-size: 14px;
   font-weight: 600;
