@@ -12,13 +12,13 @@ export const HomePage: React.FC<{ user: any }> = ({ user }) => {
     <div>
       <span>{user.email}</span>
       <hr />
-      <div>
-        <span>{`Твоя цель: сбросить вес до ${fullData?.goalWeight}кг к ${fullData?.dateFinish}`}</span>
-      </div>
+
       {fullData?.startWeight === 0 ? (
         <NoGoal />
       ) : (
         <div>
+          <span>{`Твоя цель: сбросить вес до ${fullData?.goalWeight}кг к ${fullData?.dateFinish}`}</span>
+          <hr />
           <Chart />
           <WeightTable />
         </div>

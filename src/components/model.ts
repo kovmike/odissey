@@ -63,7 +63,9 @@ export const $dateLine: Store<string[]> = combine(
       timeCode.push(new Date(timeCounter).toLocaleString("ru"));
       timeCounter = timeCounter + 24 * 60 * 60 * 1000;
     }
-    return timeCode.map((date) => date.split(",")[0].replace(/\./g, "-"));
+    return timeCode.map((date) =>
+      date.split(",")[0].split(".").reverse().join("-")
+    );
   }
 );
 

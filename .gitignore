@@ -1,5 +1,4 @@
 node_modules
-src/assets/firebaseConfig.ts
 .DS_Store
 dist
 dist-ssr
