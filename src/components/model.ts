@@ -1,7 +1,7 @@
-import { createDomain, combine, Store, sample } from "effector";
+import { createDomain, combine, Store, sample, guard } from "effector";
 import { getter, setter, updater } from "../assets/firebaseUtils";
 import { $loggedUser } from "../features/auth/model";
-import { getExistsUserDataFx } from "../features/goals/model";
+import { $userFullData, getExistsUserDataFx } from "../features/goals/model";
 import { Point } from "./types";
 
 const root = createDomain("root");
@@ -12,6 +12,7 @@ export const setFinishTime = root.createEvent<Date | null>();
 export const setStartWeight = root.createEvent<number>();
 export const setGoalWeight = root.createEvent<number>();
 export const setEmptyGoal = root.createEvent<void>();
+export const setFactValue = root.createEvent<{ [path: string]: any }>();
 
 /**effects */
 export const setEmptyGoalFx = root.createEffect<
@@ -29,11 +30,11 @@ export const getChartDataFx = root.createEffect(
 );
 
 export const updateUserDataFx = root.createEffect<
-  { path: string; userData: any },
+  { [path: string]: any },
   Promise<void>,
   Error
->(async ({ path, userData }) => {
-  return await updater(`${path}`, userData);
+>(async (userData) => {
+  return await updater(userData);
 });
 
 /**stores */
@@ -48,10 +49,8 @@ $dateFinish.on(setFinishTime, (_, finish) => finish);
 $startWeight.on(setStartWeight, (_, weight) => weight);
 $goalWeight.on(setGoalWeight, (_, goalWeight) => goalWeight);
 $chartData
-  .on(getChartDataFx.doneData, (_, data) => Object.values(data.val()))
-  .on(getExistsUserDataFx.doneData, (_, data) =>
-    Object.values(data.val().goal)
-  );
+  .on($userFullData, (_, fullData) => fullData && Object.values(fullData.goal))
+  .on(getChartDataFx.doneData, (_, data) => Object.values(data.val()));
 
 export const $dateLine: Store<string[]> = combine(
   $dateStart,
@@ -77,8 +76,10 @@ export const $combinedChartData = combine<
   return dateLine.reduce((acc: { [x: string]: any }, date, index, dl) => {
     acc[date] = {
       name: date,
-      goal: startWeight - ((startWeight - goal) / dl.length) * index,
-      fact: 0,
+      goal: +(startWeight - ((startWeight - goal) / dl.length) * index).toFixed(
+        2
+      ),
+      fact: index === 0 ? startWeight : 0,
     };
     return acc;
   }, {});
@@ -95,6 +96,7 @@ export const $combinedUserData = combine(
   })
 );
 
+//запись новой цели(создание расписания)
 sample({
   source: combine($loggedUser, $combinedChartData, (user, data) => ({
     user,
@@ -105,21 +107,40 @@ sample({
   target: setEmptyGoalFx,
 });
 
+//запись новых данных пользователя
 sample({
   clock: setEmptyGoalFx.done,
-  source: combine($loggedUser, $combinedUserData, (user, userData) => ({
-    path: `${user?.uid}/`,
-    userData,
-  })),
-  // fn:(c)=>c,
+  source: combine($loggedUser, $combinedUserData, (user, userData) => {
+    return Object.entries(userData).reduce((acc, [key, value]) => {
+      if (user) {
+        return { ...acc, [`/users/${user.uid}/${key}`]: value };
+      }
+      return acc;
+    }, {});
+  }),
   target: updateUserDataFx,
 });
 
-sample({
-  source: setEmptyGoalFx.done,
-  fn: ({ params }) => params,
-  target: getChartDataFx,
+// sample({
+//   source: setEmptyGoalFx.done,
+//   fn: ({ params }) => params.path,
+//   target: getExistsUserDataFx,
+// });
+
+//обновление данных пользоавтеля
+guard({
+  source: $loggedUser.map((user) => user?.uid),
+  clock: updateUserDataFx.done,
+  filter: Boolean,
+  target: getExistsUserDataFx,
 });
 
-//TODO Переписать updater
-$chartData.watch(console.log);
+//обновление фактических данных
+sample({
+  source: $loggedUser,
+  clock: setFactValue,
+  fn: (user, { name, newValue }) => ({
+    [`/users/${user!.uid}/goal/${name}/fact`]: newValue,
+  }),
+  target: updateUserDataFx,
+});

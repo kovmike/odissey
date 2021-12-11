@@ -14,10 +14,9 @@ export const getter = (path: string) => {
 };
 
 //update in db
-export const updater = (path: string, data: any) => {
+export const updater = (data: { [path: string]: any }) => {
   const dbRef = ref(dataBase);
-  return update(dbRef, { [`users/${path}`]: data });
+  return update(dbRef, data);
 };
-
 
 /**comments by KO */

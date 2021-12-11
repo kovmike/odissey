@@ -24,11 +24,14 @@ export const AuthForm = () => {
 
   if (pending)
     return (
+      <>
       <ProgressSpinner
         style={{ width: "150px", height: "150px" }}
         strokeWidth="8"
         animationDuration=".5s"
-      />
+     />
+       <span className="scha">Ща, ща, ща...</span>
+     </>
     );
 
   return (

@@ -70,6 +70,7 @@ export const pendings = combine(
   [signInFx.pending, signUpFx.pending],
   (statuses) => statuses.some(Boolean)
 );
+
 //регистрация нового пользователя
 guard({
   source: $authData,
@@ -94,5 +95,3 @@ sample({
   fn: (error) => error.message.includes("wrong"),
   target: errorDetected,
 });
-
-//$loggedUser.watch(console.log);

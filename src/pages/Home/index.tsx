@@ -1,19 +1,28 @@
 import { useStore } from "effector-react";
-import { $userGoal } from "../../features/goals/model";
+import { $userFullData } from "../../features/goals/model";
 import { NoGoal } from "../../components/noGoalNotification";
-import { $chartData } from "../../components/model";
+
 import { Chart } from "../../components/chart";
+import { WeightTable } from "../../components/weight-table";
 
 export const HomePage: React.FC<{ user: any }> = ({ user }) => {
-  const goal = useStore($userGoal);
-  const chartData = useStore($chartData);
+  const fullData = useStore($userFullData);
 
   return (
     <div>
       <span>{user.email}</span>
       <hr />
-      {chartData && <Chart />}
-      {goal?.startWeight === 0 && <NoGoal />}
+      <div>
+        <span>{`Твоя цель: сбросить вес до ${fullData?.goalWeight}кг к ${fullData?.dateFinish}`}</span>
+      </div>
+      {fullData?.startWeight === 0 ? (
+        <NoGoal />
+      ) : (
+        <div>
+          <Chart />
+          <WeightTable />
+        </div>
+      )}
     </div>
   );
 };
