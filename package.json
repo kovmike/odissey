@@ -14,8 +14,6 @@
     "firebase": "^9.5.0",
     "moment": "^2.29.1",
     "patronum": "^1.1.0",
-    "primeicons": "^5.0.0",
-    "primereact": "^7.0.1",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
     "react-router-dom": "^6.0.2",

@@ -123,12 +123,6 @@ sample({
   target: updateUserDataFx,
 });
 
-// sample({
-//   source: setEmptyGoalFx.done,
-//   fn: ({ params }) => params.path,
-//   target: getExistsUserDataFx,
-// });
-
 //обновление данных пользоавтеля
 guard({
   source: $loggedUser.map((user) => user?.uid),
@@ -145,4 +139,10 @@ sample({
     [`/users/${user!.uid}/goal/${name}/fact`]: newValue,
   }),
   target: updateUserDataFx,
+});
+
+//не справился
+export const $youLooser = $chartData.map((data) => {
+  const lastDay = data && data[data.length - 1];
+  return lastDay && lastDay.fact !== 0 && lastDay.fact > lastDay.goal;
 });

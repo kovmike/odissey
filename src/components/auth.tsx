@@ -1,4 +1,4 @@
-import { Button, Input, Spin } from "antd";
+import { Button, Input, Space, Spin } from "antd";
 import { useStore } from "effector-react";
 import {
   UserOutlined,
@@ -35,32 +35,34 @@ export const AuthForm = () => {
 
   return (
     <form>
-      <h1>Вход/регистрация</h1>
-      <Input
-        placeholder="имя/емайл"
-        prefix={<UserOutlined className="site-form-item-icon" />}
-        onChange={(e) => {
-          setAuthData({ user: e.target.value });
-        }}
-      />
-      <Input.Password
-        prefix={<UnlockOutlined />}
-        placeholder="паролъ"
-        onChange={(e) => {
-          setAuthData({ password: e.target.value });
-        }}
-      />
+      <Space direction="vertical">
+        <h1>Вход/регистрация</h1>
+        <Input
+          placeholder="имя/емайл"
+          prefix={<UserOutlined className="site-form-item-icon" />}
+          onChange={(e) => {
+            setAuthData({ user: e.target.value });
+          }}
+        />
+        <Input.Password
+          prefix={<UnlockOutlined />}
+          placeholder="паролъ"
+          onChange={(e) => {
+            setAuthData({ password: e.target.value });
+          }}
+        />
 
-      {wrongPassword && <span style={{ color: "red" }}>неверные пароль</span>}
-      <Button
-        type="primary"
-        onClick={(e) => {
-          e.preventDefault();
-          logIn();
-        }}
-      >
-        Войди
-      </Button>
+        {wrongPassword && <span style={{ color: "red" }}>неверные пароль</span>}
+        <Button
+          type="primary"
+          onClick={(e) => {
+            e.preventDefault();
+            logIn();
+          }}
+        >
+          Войди
+        </Button>
+      </Space>
     </form>
   );
 };

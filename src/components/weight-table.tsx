@@ -1,48 +1,60 @@
+import { Table } from "antd";
 import { useStore } from "effector-react";
-import { Column, ColumnEditorOptions } from "primereact/column";
-import { DataTable } from "primereact/datatable";
-import { InputNumber } from "primereact/inputnumber";
-import { isPositiveValue } from "../utils";
-import { $chartData, setFactValue } from "./model";
-import { CompleteOptions } from "./types";
+import { useState } from "react";
+import { EditableCell } from "./editable-cell";
+import { $chartData } from "./model";
 
 export const WeightTable: React.FC = () => {
   const chartData = useStore($chartData);
+  const [editIndex, setEditIndex] = useState<number | null>(null);
 
-  const factEditor = (options: ColumnEditorOptions) => {
-    return (
-      <InputNumber
-        value={options.value}
-        onValueChange={(e) => options.editorCallback!(e.value)}
-      />
-    );
-  };
-
-  const onCellEditComplete = (e: CompleteOptions) => {
-    const { rowData, newValue, field, originalEvent: event } = e;
-    if (isPositiveValue(newValue)) {
-      setFactValue({ name: rowData.name, newValue });
-      rowData[field] = newValue;
-    } else event.preventDefault();
-  };
+  const columns = [
+    {
+      title: "Дата",
+      dataIndex: "name",
+      key: "dateName",
+      width: "30%",
+      align: "center" as "center",
+    },
+    {
+      title: "Цель",
+      dataIndex: "goal",
+      key: "goal",
+      width: "30%",
+      align: "center" as "center",
+    },
+    {
+      title: "Факт",
+      dataIndex: "fact",
+      key: "fact",
+      width: "40%",
+      align: "center" as "center",
+      render: (text: any, record: any, index: any) => {
+        return editIndex !== index ? (
+          <h4
+            onClick={() => {
+              setEditIndex(index);
+            }}
+          >
+            {text}
+          </h4>
+        ) : (
+          <EditableCell value={record} setEditIndex={setEditIndex} />
+        );
+      },
+    },
+  ];
 
   return (
-    <DataTable
-      value={chartData!}
-      editMode="cell"
-      showGridlines
-      responsiveLayout="scroll"
-    >
-      <Column style={{ width: "33%" }} field="name" header="Дата" />
-      <Column style={{ width: "33%" }} field="goal" header="Цель" />
-      <Column
-        key="fact"
-        style={{ width: "33%" }}
-        field="fact"
-        header="Факт"
-        editor={(options) => factEditor(options)}
-        onCellEditComplete={onCellEditComplete}
-      />
-    </DataTable>
+    chartData && (
+      <Table
+        dataSource={chartData}
+        pagination={false}
+        size="small"
+        columns={columns}
+        bordered
+        scroll={{ y: 600 }}
+      ></Table>
+    )
   );
 };

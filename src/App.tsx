@@ -1,16 +1,12 @@
 import { useStore } from "effector-react";
-import { addLocale, locale } from "primereact/api";
 import { useEffect } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import "./App.scss";
 import { RequireAuth } from "./features/auth/AuthWrapper";
-import { $loggedUser, pendings } from "./features/auth/model";
-import { ruCalendarLocale } from "./locales";
+import { $loggedUser} from "./features/auth/model";
 import { Auth } from "./pages/Auth";
 import { HomePage } from "./pages/Home";
+import "./App.scss";
 
-addLocale("ru", ruCalendarLocale);
-locale("ru");
 export const App: React.FC = () => {
   const navigate = useNavigate();
   const user = useStore($loggedUser);

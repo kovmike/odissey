@@ -4,6 +4,10 @@
   text-align: center;
 }
 
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+  transition: background-color 600000s 0s, color 600000s 0s;
+}
 .auth-form {
   text-align: center;
 }
@@ -14,4 +18,48 @@
   left: calc(50% - 40px);
   font-size: 14px;
   font-weight: 600;
+}
+
+.homepage {
+  display: grid;
+  grid-template-columns: 0.3fr 80% 0.3fr;
+  grid-template-rows: 0.1fr 0.1fr 1fr 2fr;
+  gap: 0px 0px;
+  grid-template-areas:
+    ". user ."
+    ". goal ."
+    ". charts ."
+    ". data-table .";
+  align-content: space-between;
+  justify-content: center;
+  align-items: start;
+  justify-items: center;
+}
+.user {
+  grid-area: user;
+}
+.goal {
+  grid-area: goal;
+  font-size: 16px;
+  font-weight: 500;
+}
+.charts {
+  grid-area: charts;
+  width: 100%;
+  max-width: 1200px;
+  height: 300px;
+}
+.data-table {
+  grid-area: data-table;
+  width: 50%;
+  max-width: 600px;
+}
+
+.goal-builder {
+  display: flex;
+  justify-content: center;
+}
+
+.input-goalbuilder {
+  width: 180px;
 }
