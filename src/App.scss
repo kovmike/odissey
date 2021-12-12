@@ -29,7 +29,7 @@ input:-webkit-autofill:focus {
     ". user ."
     ". goal ."
     ". charts ."
-    ". data-table .";
+    " data-table data-table  data-table";
   align-content: space-between;
   justify-content: center;
   align-items: start;
@@ -51,7 +51,6 @@ input:-webkit-autofill:focus {
 }
 .data-table {
   grid-area: data-table;
-  width: 50%;
   max-width: 600px;
 }
 
