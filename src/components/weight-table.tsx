@@ -13,21 +13,18 @@ export const WeightTable: React.FC = () => {
       title: "Дата",
       dataIndex: "name",
       key: "dateName",
-      width: "30%",
       align: "center" as "center",
     },
     {
       title: "Цель",
       dataIndex: "goal",
       key: "goal",
-      width: "30%",
       align: "center" as "center",
     },
     {
       title: "Факт",
       dataIndex: "fact",
       key: "fact",
-      width: "40%",
       align: "center" as "center",
       render: (text: any, record: any, index: any) => {
         return editIndex !== index ? (
