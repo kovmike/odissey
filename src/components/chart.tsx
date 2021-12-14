@@ -9,7 +9,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { $userFullData } from "../features/goals/model";
-import { $chartData } from "./model";
+import { $chartData } from "../features/usersExp/model";
 import { Point } from "./types";
 
 export const Chart = () => {

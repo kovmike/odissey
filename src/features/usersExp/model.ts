@@ -1,8 +1,8 @@
 import { createDomain, combine, Store, sample, guard } from "effector";
-import { getter, setter, updater } from "../assets/firebaseUtils";
-import { $loggedUser } from "../features/auth/model";
-import { $userFullData, getExistsUserDataFx } from "../features/goals/model";
-import { Point } from "./types";
+import { getter, setter, updater } from "../../assets/firebaseUtils";
+import { $loggedUser } from "../auth/model";
+import { $userFullData, getExistsUserDataFx } from "../goals/model";
+import { Point, User } from "../../components/types";
 
 const root = createDomain("root");
 
@@ -13,6 +13,7 @@ export const setStartWeight = root.createEvent<number>();
 export const setGoalWeight = root.createEvent<number>();
 export const setEmptyGoal = root.createEvent<void>();
 export const setFactValue = root.createEvent<{ [path: string]: any }>();
+export const setReviewedUser = root.createEvent<User>();
 
 /**effects */
 export const setEmptyGoalFx = root.createEffect<
@@ -23,12 +24,6 @@ export const setEmptyGoalFx = root.createEffect<
   return await setter(path, data);
 });
 
-export const getChartDataFx = root.createEffect(
-  async ({ path }: { path: string }) => {
-    return await getter(`users/${path}`);
-  }
-);
-
 export const updateUserDataFx = root.createEffect<
   { [path: string]: any },
   Promise<void>,
@@ -37,21 +32,31 @@ export const updateUserDataFx = root.createEffect<
   return await updater(userData);
 });
 
+const fetchUsersList = root.createEffect(() => {
+  return getter("users");
+});
+
 /**stores */
 export const $chartData = root.createStore<Point[] | null>(null);
 export const $startWeight = root.createStore<number>(0);
 export const $goalWeight = root.createStore<number>(0);
 export const $dateStart = root.createStore<Date | null>(null);
 export const $dateFinish = root.createStore<Date | null>(null);
+export const $usersList = root.createStore<any>(null);
+export const $reviewedUser = root.createStore<User | null>(null);
 
+/*reactions*/
 $dateStart.on(setStartTime, (_, start) => start);
 $dateFinish.on(setFinishTime, (_, finish) => finish);
 $startWeight.on(setStartWeight, (_, weight) => weight);
 $goalWeight.on(setGoalWeight, (_, goalWeight) => goalWeight);
-$chartData
-  .on($userFullData, (_, fullData) => fullData && Object.values(fullData.goal))
-  .on(getChartDataFx.doneData, (_, data) => Object.values(data.val()));
+$chartData.on(
+  $userFullData,
+  (_, fullData) => fullData && Object.values(fullData.goal)
+);
+$reviewedUser.on(setReviewedUser, (_, user) => user);
 
+/*combined stores*/
 export const $dateLine: Store<string[]> = combine(
   $dateStart,
   $dateFinish,
@@ -139,6 +144,26 @@ sample({
     [`/users/${user!.uid}/goal/${name}/fact`]: newValue,
   }),
   target: updateUserDataFx,
+});
+
+//получение списка пользователей
+guard({
+  source: $loggedUser,
+  filter: Boolean,
+  target: fetchUsersList,
+});
+
+sample({
+  source: $loggedUser,
+  clock: fetchUsersList.doneData,
+  fn: (loggedUser, userList) => {
+    if (userList.exists()) {
+      const { [loggedUser!.uid]: log, ...rest } = userList.val();
+      return Object.values(rest);
+    }
+    return [];
+  },
+  target: $usersList,
 });
 
 //не справился
