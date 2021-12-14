@@ -10,7 +10,7 @@ import {
   $goalWeight,
   setGoalWeight,
   setEmptyGoal,
-} from "./model";
+} from "../features/usersExp/model";
 import { Button, DatePicker, InputNumber, Space } from "antd";
 
 interface GoalBuilderProps {
@@ -46,9 +46,6 @@ export const GoalBuilder: React.FC<GoalBuilderProps> = ({ setCloseDialog }) => {
           onChange={(value) => {
             if (!isNaN(value)) setStartWeight(value);
           }}
-          onKeyDown={(e) => {
-            if (!/[\d.,]/g.test(e.key)) e.preventDefault();
-          }}
           step={0.25}
           min={0}
           max={200}
@@ -62,9 +59,6 @@ export const GoalBuilder: React.FC<GoalBuilderProps> = ({ setCloseDialog }) => {
           max={startWeight}
           onChange={(value) => {
             if (!isNaN(value)) setGoalWeight(value);
-          }}
-          onKeyDown={(e) => {
-            if (!/[\d.,]/g.test(e.key)) e.preventDefault();
           }}
         />
         <Button type="primary" onClick={setGoal}>

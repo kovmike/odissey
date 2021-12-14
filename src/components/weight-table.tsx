@@ -2,7 +2,7 @@ import { Table } from "antd";
 import { useStore } from "effector-react";
 import { useState } from "react";
 import { EditableCell } from "./editable-cell";
-import { $chartData } from "./model";
+import { $chartData } from "../features/usersExp/model";
 
 export const WeightTable: React.FC = () => {
   const chartData = useStore($chartData);

@@ -2,10 +2,11 @@ import { useStore } from "effector-react";
 import { useEffect } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { RequireAuth } from "./features/auth/AuthWrapper";
-import { $loggedUser} from "./features/auth/model";
+import { $loggedUser } from "./features/auth/model";
 import { Auth } from "./pages/Auth";
 import { HomePage } from "./pages/Home";
 import "./App.scss";
+import { Review } from "./pages/Review";
 
 export const App: React.FC = () => {
   const navigate = useNavigate();
@@ -23,6 +24,14 @@ export const App: React.FC = () => {
         element={
           <RequireAuth>
             <HomePage user={user} />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/review"
+        element={
+          <RequireAuth>
+            <Review />
           </RequireAuth>
         }
       />

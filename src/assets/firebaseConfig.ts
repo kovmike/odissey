@@ -2,17 +2,15 @@ import { getDatabase } from "@firebase/database";
 import { initializeApp } from "firebase/app";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDKq3gFik7hQ6dgg3ZAS_imL2UlwBoAOLk",
-  authDomain: "odyssey-e6300.firebaseapp.com",
-  databaseURL:
-    "https://odyssey-e6300-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "odyssey-e6300",
-  storageBucket: "odyssey-e6300.appspot.com",
-  messagingSenderId: "940165584706",
-  appId: "1:940165584706:web:a90ed5078e40c7b4a49adb",
-  measurementId: "G-6FM51BKL1G",
+  apiKey: import.meta.env.VITE_API_KEY as string,
+  authDomain: import.meta.env.VITE_AUTH_DOMAIN as string,
+  databaseURL: import.meta.env.VITE_DATABASE_URL as string,
+  projectId: import.meta.env.VITE_PROJECT_ID as string,
+  storageBucket: import.meta.env.VITE_STORAGE_BUCKET as string,
+  messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID as string,
+  appId: import.meta.env.VITE_APP_ID as string,
+  measurementId: import.meta.env.VITE_MEASUREMENT_ID as string,
 };
-
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
 

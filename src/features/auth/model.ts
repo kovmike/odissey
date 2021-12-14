@@ -7,6 +7,7 @@ import {
   User,
 } from "firebase/auth";
 import { app } from "../../assets/firebaseConfig";
+import { getter } from "../../assets/firebaseUtils";
 import { SingUpData } from "./types";
 
 const firebaseSignUp = ({
@@ -29,11 +30,13 @@ const firebaseSignIn = ({
 
 const authRoot = createDomain();
 
+/*events*/
 export const setLoggedUser = authRoot.createEvent<any>();
 export const setAuthData = authRoot.createEvent<{ [key: string]: string }>();
 export const logIn = authRoot.createEvent<void>();
 const errorDetected = authRoot.createEvent<boolean>();
 
+/*effects*/
 export const signUpFx = authRoot.createEffect<
   { [key: string]: string },
   any,
@@ -50,6 +53,9 @@ export const signInFx = authRoot.createEffect<
   return await firebaseSignIn({ app, user, password });
 });
 
+
+
+/**stores */
 export const $loggedUser = authRoot.createStore<User | null>(null);
 export const $authData = authRoot.createStore<{ [key: string]: string }>({});
 export const $errorAuth = authRoot.createStore<boolean>(false);
@@ -65,6 +71,8 @@ $loggedUser
 $authData.on(setAuthData, (data, payload) => ({ ...data, ...payload }));
 
 $errorAuth.on(errorDetected, (_, detected) => detected);
+
+//$usersList.on(fetchUsersList.doneData, (_, d) => d.val());
 
 export const pendings = combine(
   [signInFx.pending, signUpFx.pending],
@@ -95,3 +103,6 @@ sample({
   fn: (error) => error.message.includes("wrong"),
   target: errorDetected,
 });
+
+
+

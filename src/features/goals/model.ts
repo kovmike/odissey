@@ -26,7 +26,6 @@ export const getExistsUserDataFx = goal.createEffect<
 });
 
 export const $userFullData = goal.createStore<User|null>(null);
-export const $success = goal.createStore<boolean>(false);
 
 $userFullData.on(getExistsUserDataFx.doneData, (_, userData) => userData.val());
 
