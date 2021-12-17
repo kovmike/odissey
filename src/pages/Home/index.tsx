@@ -1,4 +1,7 @@
 import { useStore } from "effector-react";
+import { User } from "firebase/auth";
+import { Button, Select } from "antd";
+import { useNavigate } from "react-router-dom";
 import { $userFullData } from "../../features/goals/model";
 import { NoGoal } from "../../components/noGoalNotification";
 import { Chart } from "../../components/chart";
@@ -6,35 +9,47 @@ import { WeightTable } from "../../components/weight-table";
 import {
   $usersList,
   $youLooser,
-  setReviewedUser,
+  getReviewedUser,
 } from "../../features/usersExp/model";
-import { Button, Select } from "antd";
-import { useNavigate } from "react-router-dom";
-import { User } from "../../components/types";
+import { DBUser } from "../../components/types";
+import { useState } from "react";
 
-export const HomePage: React.FC<{ user: any }> = ({ user }) => {
+export const HomePage: React.FC<{ user: User | null }> = ({ user }) => {
   const navigate = useNavigate();
+  const [selectedUser, setSelectedUser] = useState<string | null | undefined>(
+    null
+  );
   const fullData = useStore($userFullData);
   const userList = useStore($usersList);
   const youLooser = useStore($youLooser);
   const { Option } = Select;
 
-  const selectReviewedUser = (user: any) => {
-    console.log(user);
-    //TODO разобраться с select и типами юзеров
-    if (user) setReviewedUser(user);
-  };
-
   return (
     <div className="homepage">
       <header className="user">
-        <span>{user.email}</span>
-        <Select onChange={selectReviewedUser} style={{ width: 120 }}>
-          {(userList || []).map((user: User) => (
-            <Option value={user.user}>{user.username}</Option>
-          ))}
-        </Select>
-        <Button onClick={() => navigate("/review")}>to review</Button>
+        <span>{user?.email}</span>
+        <div>
+          <Select
+            onChange={(e) => setSelectedUser(e as string)}
+            style={{ width: 200 }}
+            placeholder="Выбери кого-нибудь"
+          >
+            {(userList || []).map((user: DBUser) => (
+              <Option value={user.user}>{user.username}</Option>
+            ))}
+          </Select>
+          <Button
+            disabled={!selectedUser}
+            onClick={() => {
+              if (selectedUser) {
+                getReviewedUser(selectedUser);
+                navigate("/review");
+              }
+            }}
+          >
+            Просто посмотреть
+          </Button>
+        </div>
       </header>
 
       {fullData?.startWeight === 0 ? (
@@ -50,9 +65,7 @@ export const HomePage: React.FC<{ user: any }> = ({ user }) => {
           ) : (
             <span>Ты не справился</span>
           )}
-          <div className="charts">
-            <Chart />
-          </div>
+          <div className="charts">{fullData && <Chart user={fullData} />}</div>
           <div className="data-table">
             <WeightTable />
           </div>

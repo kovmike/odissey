@@ -1,8 +1,9 @@
-import { createDomain, combine, Store, sample, guard } from "effector";
+import { createDomain, combine, Store, sample, guard, attach } from "effector";
 import { getter, setter, updater } from "../../assets/firebaseUtils";
 import { $loggedUser } from "../auth/model";
 import { $userFullData, getExistsUserDataFx } from "../goals/model";
-import { Point, User } from "../../components/types";
+import { Point, DBUser } from "../../components/types";
+import { DataSnapshot } from "firebase/database";
 
 const root = createDomain("root");
 
@@ -13,10 +14,10 @@ export const setStartWeight = root.createEvent<number>();
 export const setGoalWeight = root.createEvent<number>();
 export const setEmptyGoal = root.createEvent<void>();
 export const setFactValue = root.createEvent<{ [path: string]: any }>();
-export const setReviewedUser = root.createEvent<User>();
+export const getReviewedUser = root.createEvent<string>();
 
 /**effects */
-export const setEmptyGoalFx = root.createEffect<
+const setEmptyGoalFx = root.createEffect<
   { path: string; data: any },
   Promise<void>,
   any
@@ -24,7 +25,7 @@ export const setEmptyGoalFx = root.createEffect<
   return await setter(path, data);
 });
 
-export const updateUserDataFx = root.createEffect<
+const updateUserDataFx = root.createEffect<
   { [path: string]: any },
   Promise<void>,
   Error
@@ -36,6 +37,11 @@ const fetchUsersList = root.createEffect(() => {
   return getter("users");
 });
 
+const fetchReviewedUserDataFx = root.createEffect<string, DataSnapshot, Error>(
+  async (user: string) => {
+    return await getter(`users/${user}`);
+  }
+);
 /**stores */
 export const $chartData = root.createStore<Point[] | null>(null);
 export const $startWeight = root.createStore<number>(0);
@@ -43,7 +49,7 @@ export const $goalWeight = root.createStore<number>(0);
 export const $dateStart = root.createStore<Date | null>(null);
 export const $dateFinish = root.createStore<Date | null>(null);
 export const $usersList = root.createStore<any>(null);
-export const $reviewedUser = root.createStore<User | null>(null);
+export const $reviewedUser = root.createStore<DBUser | null>(null);
 
 /*reactions*/
 $dateStart.on(setStartTime, (_, start) => start);
@@ -54,7 +60,10 @@ $chartData.on(
   $userFullData,
   (_, fullData) => fullData && Object.values(fullData.goal)
 );
-$reviewedUser.on(setReviewedUser, (_, user) => user);
+$reviewedUser.on(fetchReviewedUserDataFx.doneData, (_, userData) =>
+  userData.val()
+);
+
 
 /*combined stores*/
 export const $dateLine: Store<string[]> = combine(
@@ -165,6 +174,9 @@ sample({
   },
   target: $usersList,
 });
+
+//
+sample({ source: getReviewedUser, target: fetchReviewedUserDataFx });
 
 //не справился
 export const $youLooser = $chartData.map((data) => {

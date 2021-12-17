@@ -5,9 +5,9 @@ export interface Point {
   [key: string]: number | string;
 }
 
-export interface User {
+export interface DBUser {
   dateFinish: Date;
-  goal: Point[] | { startWeight: number };
+  goal: { [key: string]: Point } | { startWeight: number };
   goalWeight: number;
   startWeight: number;
   user: string;
