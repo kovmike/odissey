@@ -5,7 +5,6 @@ import {
   sample,
   guard,
   createEffect,
-  UnionToStoresUnion,
 } from "effector";
 import { getter, setter, updater } from "../../assets/firebaseUtils";
 import { $loggedUser } from "../auth/model";

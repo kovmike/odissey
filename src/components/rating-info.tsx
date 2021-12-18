@@ -2,6 +2,7 @@ import { DislikeTwoTone, MehTwoTone, SmileTwoTone } from "@ant-design/icons";
 import { Point } from "./types";
 
 export const RatingInfo: React.FC<{ record: Point }> = ({ record }) => {
+ 
   if (!record.hasOwnProperty("rating"))
     return <MehTwoTone twoToneColor="#8b00ff" />;
 

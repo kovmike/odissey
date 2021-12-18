@@ -44,12 +44,12 @@ export const GoalBuilder: React.FC<GoalBuilderProps> = ({ setCloseDialog }) => {
         <InputNumber
           className="input-goalbuilder"
           value={startWeight}
-          onChange={(value) => {
-            if (!isNaN(value)) setStartWeight(value);
-          }}
           step={0.25}
           min={0}
           max={200}
+          onChange={(value) => {
+            if (!isNaN(value)) setStartWeight(value);
+          }}
         />
         <h3>Целевой вес</h3>
         <InputNumber

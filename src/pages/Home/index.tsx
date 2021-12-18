@@ -1,6 +1,7 @@
+import { useState } from "react";
 import { useStore } from "effector-react";
 import { User } from "firebase/auth";
-import { Button, Select } from "antd";
+import { Button, Select, Tooltip } from "antd";
 import { useNavigate } from "react-router-dom";
 import { $userFullData } from "../../features/goals/model";
 import { NoGoal } from "../../components/no-goal";
@@ -12,7 +13,7 @@ import {
   getReviewedUser,
 } from "../../features/usersExp/model";
 import { DBUser } from "../../components/types";
-import { useState } from "react";
+import { GithubFilled } from "@ant-design/icons";
 
 export const HomePage: React.FC<{ user: User | null }> = ({ user }) => {
   const navigate = useNavigate();
@@ -50,23 +51,32 @@ export const HomePage: React.FC<{ user: User | null }> = ({ user }) => {
           </Button>
         </div>
       </header>
+      <div className="git">
+        <Tooltip title="Поглядеть на говнокод">
+          <a href="https://github.com/kovmike/odissey" target="_blanc">
+            <GithubFilled />
+          </a>
+        </Tooltip>
+      </div>
 
       {fullData?.startWeight === 0 ? (
         <NoGoal />
       ) : (
         <>
           {!youLooser ? (
-            <span className="goal">{`Твоя цель: сбросить вес до ${
-              fullData?.goalWeight
-            }кг к ${new Date(fullData?.dateFinish!).toLocaleDateString(
-              "ru"
-            )}`}</span>
+            <span className="goal">
+              {`Твоя цель: сбросить вес до ${
+                fullData?.goalWeight
+              }кг к ${new Date(fullData?.dateFinish!).toLocaleDateString(
+                "ru"
+              )}`}
+            </span>
           ) : (
             <span>Ты не справился</span>
           )}
           <div className="charts">{fullData && <Chart user={fullData} />}</div>
           <div className="data-table">
-            {fullData && <WeightTable user={fullData} review={false}/>}
+            {fullData && <WeightTable user={fullData} review={false} />}
           </div>
         </>
       )}
