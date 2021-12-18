@@ -2,7 +2,8 @@ export interface Point {
   name: string;
   goal: number;
   fact: number;
-  [key: string]: number | string;
+  rating?: { [x: string]: 0 | 1 };
+  // [key: string]: number | string| {[x:string]:0|1};
 }
 
 export interface DBUser {

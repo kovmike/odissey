@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { Button, Table, Tooltip } from "antd";
-import { DislikeTwoTone, SmileTwoTone } from "@ant-design/icons";
+import { Table } from "antd";
 import { EditableCell } from "./editable-cell";
 import { DBUser, Point } from "./types";
 import { RatingButtons } from "./rating-buttons";
@@ -36,7 +35,7 @@ export const WeightTable: React.FC<{ user: DBUser; review: boolean }> = ({
           <h4
             style={{ cursor: "pointer" }}
             onClick={() => {
-              setEditIndex(index);
+              if (!review) setEditIndex(index);
             }}
           >
             {text}
@@ -51,7 +50,12 @@ export const WeightTable: React.FC<{ user: DBUser; review: boolean }> = ({
       dataIndex: "fact",
       key: "rating",
       align: "center" as "center",
-      render: () => (review ? <RatingButtons /> : <RatingInfo />),
+      render: (text: number, record: Point, index: number) =>
+        review ? (
+          <RatingButtons record={record} />
+        ) : (
+          <RatingInfo record={record} />
+        ),
     },
   ];
 

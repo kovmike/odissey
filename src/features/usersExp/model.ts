@@ -1,4 +1,12 @@
-import { createDomain, combine, Store, sample, guard, attach } from "effector";
+import {
+  createDomain,
+  combine,
+  Store,
+  sample,
+  guard,
+  createEffect,
+  UnionToStoresUnion,
+} from "effector";
 import { getter, setter, updater } from "../../assets/firebaseUtils";
 import { $loggedUser } from "../auth/model";
 import { $userFullData, getExistsUserDataFx } from "../goals/model";
@@ -15,6 +23,8 @@ export const setGoalWeight = root.createEvent<number>();
 export const setEmptyGoal = root.createEvent<void>();
 export const setFactValue = root.createEvent<{ [path: string]: any }>();
 export const getReviewedUser = root.createEvent<string>();
+export const ratingMarkAdded =
+  root.createEvent<{ path: string; rating: number }>();
 
 /**effects */
 const setEmptyGoalFx = root.createEffect<
@@ -42,6 +52,15 @@ const fetchReviewedUserDataFx = root.createEffect<string, DataSnapshot, Error>(
     return await getter(`users/${user}`);
   }
 );
+
+const addRatingMarkFx = createEffect<
+  { path: string; rating: number },
+  Promise<void>,
+  Error
+>(async ({ path, rating }) => {
+  return await setter(path, rating);
+});
+
 /**stores */
 export const $chartData = root.createStore<Point[] | null>(null);
 export const $startWeight = root.createStore<number>(0);
@@ -63,7 +82,6 @@ $chartData.on(
 $reviewedUser.on(fetchReviewedUserDataFx.doneData, (_, userData) =>
   userData.val()
 );
-
 
 /*combined stores*/
 export const $dateLine: Store<string[]> = combine(
@@ -175,8 +193,34 @@ sample({
   target: $usersList,
 });
 
-//
+//запрос просматриваемого юзера
 sample({ source: getReviewedUser, target: fetchReviewedUserDataFx });
+
+//проставление рейтинга
+sample({
+  source: guard({
+    source: combine($loggedUser, $reviewedUser, (loggedUser, reviewedUser) => ({
+      loggedUser,
+      reviewedUser,
+    })),
+    filter: (users): users is Exclude<any, null> =>
+      Object.values(users).every(Boolean),
+  }),
+  clock: ratingMarkAdded,
+  fn: (users, { path, rating }) => ({
+    path: `${users.reviewedUser.user}/goal/${path}/${users.loggedUser.uid}`,
+    rating,
+  }),
+  target: addRatingMarkFx,
+});
+
+//обновление данных после проставления рейтинга
+guard({
+  source: $reviewedUser.map((user) => user?.user),
+  clock: addRatingMarkFx.done,
+  filter: Boolean,
+  target: fetchReviewedUserDataFx,
+});
 
 //не справился
 export const $youLooser = $chartData.map((data) => {
