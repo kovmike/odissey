@@ -1,4 +1,4 @@
-import { Input, InputNumber } from "antd";
+import { InputNumber } from "antd";
 import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { isPositiveValue } from "../utils";
 import { setFactValue } from "../features/usersExp/model";

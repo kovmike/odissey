@@ -2,12 +2,12 @@ export interface Point {
   name: string;
   goal: number;
   fact: number;
-  [key: string]: number | string;
+  rating?: { [x: string]: 0 | 1 };
 }
 
-export interface User {
+export interface DBUser {
   dateFinish: Date;
-  goal: Point[] | { startWeight: number };
+  goal: { [key: string]: Point } | { startWeight: number };
   goalWeight: number;
   startWeight: number;
   user: string;

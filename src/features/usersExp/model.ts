@@ -1,8 +1,16 @@
-import { createDomain, combine, Store, sample, guard } from "effector";
+import {
+  createDomain,
+  combine,
+  Store,
+  sample,
+  guard,
+  createEffect,
+} from "effector";
 import { getter, setter, updater } from "../../assets/firebaseUtils";
 import { $loggedUser } from "../auth/model";
 import { $userFullData, getExistsUserDataFx } from "../goals/model";
-import { Point, User } from "../../components/types";
+import { Point, DBUser } from "../../components/types";
+import { DataSnapshot } from "firebase/database";
 
 const root = createDomain("root");
 
@@ -13,10 +21,12 @@ export const setStartWeight = root.createEvent<number>();
 export const setGoalWeight = root.createEvent<number>();
 export const setEmptyGoal = root.createEvent<void>();
 export const setFactValue = root.createEvent<{ [path: string]: any }>();
-export const setReviewedUser = root.createEvent<User>();
+export const getReviewedUser = root.createEvent<string>();
+export const ratingMarkAdded =
+  root.createEvent<{ path: string; rating: number }>();
 
 /**effects */
-export const setEmptyGoalFx = root.createEffect<
+const setEmptyGoalFx = root.createEffect<
   { path: string; data: any },
   Promise<void>,
   any
@@ -24,7 +34,7 @@ export const setEmptyGoalFx = root.createEffect<
   return await setter(path, data);
 });
 
-export const updateUserDataFx = root.createEffect<
+const updateUserDataFx = root.createEffect<
   { [path: string]: any },
   Promise<void>,
   Error
@@ -36,6 +46,20 @@ const fetchUsersList = root.createEffect(() => {
   return getter("users");
 });
 
+const fetchReviewedUserDataFx = root.createEffect<string, DataSnapshot, Error>(
+  async (user: string) => {
+    return await getter(`users/${user}`);
+  }
+);
+
+const addRatingMarkFx = createEffect<
+  { path: string; rating: number },
+  Promise<void>,
+  Error
+>(async ({ path, rating }) => {
+  return await setter(path, rating);
+});
+
 /**stores */
 export const $chartData = root.createStore<Point[] | null>(null);
 export const $startWeight = root.createStore<number>(0);
@@ -43,7 +67,7 @@ export const $goalWeight = root.createStore<number>(0);
 export const $dateStart = root.createStore<Date | null>(null);
 export const $dateFinish = root.createStore<Date | null>(null);
 export const $usersList = root.createStore<any>(null);
-export const $reviewedUser = root.createStore<User | null>(null);
+export const $reviewedUser = root.createStore<DBUser | null>(null);
 
 /*reactions*/
 $dateStart.on(setStartTime, (_, start) => start);
@@ -54,7 +78,9 @@ $chartData.on(
   $userFullData,
   (_, fullData) => fullData && Object.values(fullData.goal)
 );
-$reviewedUser.on(setReviewedUser, (_, user) => user);
+$reviewedUser.on(fetchReviewedUserDataFx.doneData, (_, userData) =>
+  userData.val()
+);
 
 /*combined stores*/
 export const $dateLine: Store<string[]> = combine(
@@ -164,6 +190,35 @@ sample({
     return [];
   },
   target: $usersList,
+});
+
+//запрос просматриваемого юзера
+sample({ source: getReviewedUser, target: fetchReviewedUserDataFx });
+
+//проставление рейтинга
+sample({
+  source: guard({
+    source: combine($loggedUser, $reviewedUser, (loggedUser, reviewedUser) => ({
+      loggedUser,
+      reviewedUser,
+    })),
+    filter: (users): users is Exclude<any, null> =>
+      Object.values(users).every(Boolean),
+  }),
+  clock: ratingMarkAdded,
+  fn: (users, { path, rating }) => ({
+    path: `${users.reviewedUser.user}/goal/${path}/${users.loggedUser.uid}`,
+    rating,
+  }),
+  target: addRatingMarkFx,
+});
+
+//обновление данных после проставления рейтинга
+guard({
+  source: $reviewedUser.map((user) => user?.user),
+  clock: addRatingMarkFx.done,
+  filter: Boolean,
+  target: fetchReviewedUserDataFx,
 });
 
 //не справился

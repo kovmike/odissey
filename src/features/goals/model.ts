@@ -1,15 +1,19 @@
 import { createDomain, sample } from "effector";
 import { DataSnapshot } from "firebase/database";
 import { getter, setter } from "../../assets/firebaseUtils";
-import { User } from "../../components/types";
+import { DBUser } from "../../components/types";
 import { signUpFx, signInFx } from "../auth/model";
 
 const goal = createDomain();
 
-export const setNewUserFx = goal.createEffect(async (user: string) => {
-  return await setter(`${user}`, {
-    username: user.split("@")[0],
-    user,
+export const setNewUserFx = goal.createEffect<
+  { uid: string; email: string },
+  Promise<void>,
+  Error
+>(async ({ uid, email }) => {
+  return await setter(`${uid}`, {
+    username: email.split("@")[0],
+    user: uid,
     startWeight: 0,
     goalWeight: 0,
     dateFinish: "",
@@ -25,13 +29,13 @@ export const getExistsUserDataFx = goal.createEffect<
   return await getter(`users/${user}`);
 });
 
-export const $userFullData = goal.createStore<User|null>(null);
+export const $userFullData = goal.createStore<DBUser | null>(null);
 
 $userFullData.on(getExistsUserDataFx.doneData, (_, userData) => userData.val());
 
 sample({
   source: signUpFx.doneData,
-  fn: ({ user }) => user.uid,
+  fn: ({ user: { uid, email } }) => ({ uid, email }),
   target: setNewUserFx,
 });
 
@@ -43,8 +47,7 @@ sample({
 
 sample({
   source: setNewUserFx.done,
-  fn: ({ params }) => params,
+  fn: ({ params: { uid } }) => uid,
   target: getExistsUserDataFx,
 });
 
-//$userFullData.watch(console.log);

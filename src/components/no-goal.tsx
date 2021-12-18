@@ -1,6 +1,6 @@
 import { Button, Modal, Space } from "antd";
 import { useState } from "react";
-import { GoalBuilder } from "./goalBuilder";
+import { GoalBuilder } from "./goal-builder";
 
 export const NoGoal: React.FC = () => {
   const [showGoalBuilder, setShowGoalBuilder] = useState<boolean>(false);

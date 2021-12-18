@@ -7,7 +7,6 @@ import {
   User,
 } from "firebase/auth";
 import { app } from "../../assets/firebaseConfig";
-import { getter } from "../../assets/firebaseUtils";
 import { SingUpData } from "./types";
 
 const firebaseSignUp = ({

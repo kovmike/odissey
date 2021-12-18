@@ -5,8 +5,9 @@ import { RequireAuth } from "./features/auth/AuthWrapper";
 import { $loggedUser } from "./features/auth/model";
 import { Auth } from "./pages/Auth";
 import { HomePage } from "./pages/Home";
-import "./App.scss";
 import { Review } from "./pages/Review";
+import "./App.scss";
+
 
 export const App: React.FC = () => {
   const navigate = useNavigate();

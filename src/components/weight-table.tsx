@@ -1,12 +1,16 @@
-import { Table } from "antd";
-import { useStore } from "effector-react";
 import { useState } from "react";
+import { Table } from "antd";
 import { EditableCell } from "./editable-cell";
-import { $chartData } from "../features/usersExp/model";
+import { DBUser, Point } from "./types";
+import { RatingButtons } from "./rating-buttons";
+import { RatingInfo } from "./rating-info";
 
-export const WeightTable: React.FC = () => {
-  const chartData = useStore($chartData);
+export const WeightTable: React.FC<{ user: DBUser; review: boolean }> = ({
+  user,
+  review,
+}) => {
   const [editIndex, setEditIndex] = useState<number | null>(null);
+  const chartData = Object.values(user.goal);
 
   const columns = [
     {
@@ -26,11 +30,12 @@ export const WeightTable: React.FC = () => {
       dataIndex: "fact",
       key: "fact",
       align: "center" as "center",
-      render: (text: any, record: any, index: any) => {
+      render: (text: number, record: Point, index: number) => {
         return editIndex !== index ? (
           <h4
+            style={{ cursor: "pointer" }}
             onClick={() => {
-              setEditIndex(index);
+              if (!review) setEditIndex(index);
             }}
           >
             {text}
@@ -39,6 +44,18 @@ export const WeightTable: React.FC = () => {
           <EditableCell value={record} setEditIndex={setEditIndex} />
         );
       },
+    },
+    {
+      title: "Рейтинг",
+      dataIndex: "fact",
+      key: "rating",
+      align: "center" as "center",
+      render: (text: number, record: Point, index: number) =>
+        review ? (
+          <RatingButtons record={record} />
+        ) : (
+          <RatingInfo record={record} />
+        ),
     },
   ];
 

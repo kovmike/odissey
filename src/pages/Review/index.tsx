@@ -1,42 +1,44 @@
 import { Button } from "antd";
+import { useStore } from "effector-react";
 import { useNavigate } from "react-router-dom";
+import { Chart } from "../../components/chart";
+import { WeightTable } from "../../components/weight-table";
+import { $reviewedUser } from "../../features/usersExp/model";
 
 export const Review: React.FC = () => {
   const navigate = useNavigate();
+  const reviewedUser = useStore($reviewedUser);
+
   return (
     <div className="homepage">
       <header className="user">
-        review
         <Button
           onClick={() => {
             navigate("/", { replace: true });
           }}
         >
-          back to home
+          Обратно к своим целям
         </Button>
       </header>
 
-      {/* {fullData?.startWeight === 0 ? (
-        <NoGoal />
+      {reviewedUser?.startWeight === 0 ? (
+        <span className="goal">{`У товарища ${reviewedUser?.username} нет цели`}</span>
       ) : (
         <>
-          {!youLooser ? (
-            <span className="goal">{`Твоя цель: сбросить вес до ${
-              fullData?.goalWeight
-            }кг к ${new Date(fullData?.dateFinish!).toLocaleDateString(
-              "ru"
-            )}`}</span>
-          ) : (
-            <span>Ты не справился</span>
-          )}
+          <span className="goal">{`Цель ${
+            reviewedUser?.username
+          } : сбросить вес до ${reviewedUser?.goalWeight}кг к ${new Date(
+            reviewedUser?.dateFinish!
+          ).toLocaleDateString("ru")}`}</span>
+
           <div className="charts">
-            <Chart />
+            {reviewedUser && <Chart user={reviewedUser} />}
           </div>
           <div className="data-table">
-            <WeightTable />
+            {reviewedUser && <WeightTable user={reviewedUser} review />}
           </div>
         </>
-      )} */}
+      )}
     </div>
   );
 };
