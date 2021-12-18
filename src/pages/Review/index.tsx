@@ -22,7 +22,7 @@ export const Review: React.FC = () => {
       </header>
 
       {reviewedUser?.startWeight === 0 ? (
-        <span className="goal">У товарища нет цели</span>
+        <span className="goal">{`У товарища ${reviewedUser?.username} нет цели`}</span>
       ) : (
         <>
           <span className="goal">{`Цель ${
@@ -32,10 +32,10 @@ export const Review: React.FC = () => {
           ).toLocaleDateString("ru")}`}</span>
 
           <div className="charts">
-            <Chart user={reviewedUser!} />
+            {reviewedUser && <Chart user={reviewedUser} />}
           </div>
           <div className="data-table">
-            <WeightTable />
+            {reviewedUser && <WeightTable user={reviewedUser} review />}
           </div>
         </>
       )}

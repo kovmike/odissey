@@ -24,6 +24,13 @@ export const HomePage: React.FC<{ user: User | null }> = ({ user }) => {
   const youLooser = useStore($youLooser);
   const { Option } = Select;
 
+  const watch = () => {
+    if (selectedUser) {
+      getReviewedUser(selectedUser);
+      navigate("/review");
+    }
+  };
+
   return (
     <div className="homepage">
       <header className="user">
@@ -38,15 +45,7 @@ export const HomePage: React.FC<{ user: User | null }> = ({ user }) => {
               <Option value={user.user}>{user.username}</Option>
             ))}
           </Select>
-          <Button
-            disabled={!selectedUser}
-            onClick={() => {
-              if (selectedUser) {
-                getReviewedUser(selectedUser);
-                navigate("/review");
-              }
-            }}
-          >
+          <Button disabled={!selectedUser} onClick={watch}>
             Просто посмотреть
           </Button>
         </div>
@@ -67,7 +66,7 @@ export const HomePage: React.FC<{ user: User | null }> = ({ user }) => {
           )}
           <div className="charts">{fullData && <Chart user={fullData} />}</div>
           <div className="data-table">
-            <WeightTable />
+            {fullData && <WeightTable user={fullData} review={false}/>}
           </div>
         </>
       )}
