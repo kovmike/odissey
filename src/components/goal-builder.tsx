@@ -1,4 +1,5 @@
 import moment from "moment";
+import { Button, DatePicker, InputNumber, Space } from "antd";
 import { useStore } from "effector-react";
 import "moment/locale/ru";
 import locale from "antd/lib/date-picker/locale/ru_RU";
@@ -11,7 +12,7 @@ import {
   setGoalWeight,
   setEmptyGoal,
 } from "../features/usersExp/model";
-import { Button, DatePicker, InputNumber, Space } from "antd";
+import { SyntheticEvent } from "react";
 
 interface GoalBuilderProps {
   setCloseDialog: (show: boolean) => void;
@@ -21,7 +22,7 @@ export const GoalBuilder: React.FC<GoalBuilderProps> = ({ setCloseDialog }) => {
   const startWeight = useStore($startWeight);
   const goalWeight = useStore($goalWeight);
 
-  const setGoal = (e: any) => {
+  const setGoal = (e: SyntheticEvent) => {
     e.preventDefault();
     setEmptyGoal();
     setCloseDialog(false);

@@ -3,7 +3,7 @@ import { User } from "firebase/auth";
 import { Button, Select } from "antd";
 import { useNavigate } from "react-router-dom";
 import { $userFullData } from "../../features/goals/model";
-import { NoGoal } from "../../components/noGoalNotification";
+import { NoGoal } from "../../components/no-goal";
 import { Chart } from "../../components/chart";
 import { WeightTable } from "../../components/weight-table";
 import {
