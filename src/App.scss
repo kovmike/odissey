@@ -80,10 +80,16 @@ input:-webkit-autofill:focus {
   width: 180px;
 }
 
-@media (max-width: 1079px) {
+@media (max-width: 800px) {
   .homepage {
-    grid-template-rows: 0.1fr 0.1fr 0.8fr 2fr;
+    grid-template-rows: 0.2fr 0.1fr 0.8fr 2fr;
+    grid-template-areas:
+      ". user git"
+      ". goal ."
+      "charts charts charts"
+      " data-table data-table  data-table";
   }
+
   .user {
     flex-direction: column;
     align-items: center;
@@ -91,5 +97,11 @@ input:-webkit-autofill:focus {
 
   .charts {
     height: 200px;
+  }
+
+  .preview-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 }

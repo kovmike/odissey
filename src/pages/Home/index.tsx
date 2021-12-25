@@ -36,7 +36,7 @@ export const HomePage: React.FC<{ user: User | null }> = ({ user }) => {
     <div className="homepage">
       <header className="user">
         <span>{user?.email}</span>
-        <div>
+        <div className="preview-block">
           <Select
             onChange={(e) => setSelectedUser(e as string)}
             style={{ width: 200 }}
