@@ -79,3 +79,17 @@ input:-webkit-autofill:focus {
 .input-goalbuilder {
   width: 180px;
 }
+
+@media (max-width: 1079px) {
+  .homepage {
+    grid-template-rows: 0.1fr 0.1fr 0.8fr 2fr;
+  }
+  .user {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .charts {
+    height: 200px;
+  }
+}
