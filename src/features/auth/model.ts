@@ -71,7 +71,6 @@ $authData.on(setAuthData, (data, payload) => ({ ...data, ...payload }));
 
 $errorAuth.on(errorDetected, (_, detected) => detected);
 
-//$usersList.on(fetchUsersList.doneData, (_, d) => d.val());
 
 export const pendings = combine(
   [signInFx.pending, signUpFx.pending],
