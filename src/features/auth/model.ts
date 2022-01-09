@@ -1,4 +1,12 @@
-import { combine, createDomain, guard, sample } from "effector";
+import {
+  combine,
+  createDomain,
+  createEffect,
+  createEvent,
+  createStore,
+  guard,
+  sample,
+} from "effector";
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -34,6 +42,7 @@ export const setLoggedUser = authRoot.createEvent<any>();
 export const setAuthData = authRoot.createEvent<{ [key: string]: string }>();
 export const logIn = authRoot.createEvent<void>();
 const errorDetected = authRoot.createEvent<boolean>();
+export const clipboard = createEvent<any>();
 
 /*effects*/
 export const signUpFx = authRoot.createEffect<
@@ -52,13 +61,14 @@ export const signInFx = authRoot.createEffect<
   return await firebaseSignIn({ app, user, password });
 });
 
-
-
 /**stores */
 export const $loggedUser = authRoot.createStore<User | null>(null);
 export const $authData = authRoot.createStore<{ [key: string]: string }>({});
 export const $errorAuth = authRoot.createStore<boolean>(false);
 
+export const clipboardValue = createStore<any>("");
+clipboardValue.on(clipboard, (_, i) => i);
+clipboardValue.watch(console.log);
 /**
  *
  */
@@ -70,7 +80,6 @@ $loggedUser
 $authData.on(setAuthData, (data, payload) => ({ ...data, ...payload }));
 
 $errorAuth.on(errorDetected, (_, detected) => detected);
-
 
 export const pendings = combine(
   [signInFx.pending, signUpFx.pending],
@@ -101,6 +110,3 @@ sample({
   fn: (error) => error.message.includes("wrong"),
   target: errorDetected,
 });
-
-
-

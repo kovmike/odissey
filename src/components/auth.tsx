@@ -10,16 +10,26 @@ import { useNavigate } from "react-router";
 import {
   $errorAuth,
   $loggedUser,
+  clipboard,
+  clipboardValue,
   logIn,
   pendings,
   setAuthData,
 } from "../features/auth/model";
 
 export const AuthForm = () => {
+  const cb = useStore(clipboardValue);
   const wrongPassword = useStore($errorAuth);
   const user = useStore($loggedUser);
   const navigate = useNavigate();
   const pending = useStore(pendings);
+  const re = /$/m;
+
+  useEffect(() => {
+    navigator.clipboard.readText().then((r) => {
+      clipboard(r);
+    });
+  }, []);
 
   useEffect(() => {
     if (!!user) navigate("/", { replace: true });
@@ -37,6 +47,7 @@ export const AuthForm = () => {
     <form>
       <Space direction="vertical">
         <h1>Вход/регистрация</h1>
+        <h6>{cb.split(re)[0]}</h6>
         <Input
           placeholder="имя/емайл"
           prefix={<UserOutlined className="site-form-item-icon" />}
