@@ -80,6 +80,10 @@ input:-webkit-autofill:focus {
   width: 180px;
 }
 
+.today {
+  background-color: rgba(150, 219, 195, 0.205);
+}
+
 @media (max-width: 800px) {
   .homepage {
     grid-template-rows: 0.2fr 0.1fr 0.8fr 2fr;

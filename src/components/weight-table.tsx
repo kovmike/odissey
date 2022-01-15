@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { Table } from "antd";
 import { EditableCell } from "./editable-cell";
-import { DBUser, Point } from "./types";
+import { DBUser, Point, RowProps } from "./types";
 import { RatingButtons } from "./rating-buttons";
 import { RatingInfo } from "./rating-info";
 
@@ -10,7 +10,25 @@ export const WeightTable: React.FC<{ user: DBUser; review: boolean }> = ({
   review,
 }) => {
   const [editIndex, setEditIndex] = useState<number | null>(null);
-  const chartData = Object.values(user.goal);
+  const [formatedToday] = useState(
+    new Date().toLocaleString().split(",")[0].split(".").reverse().join("-")
+  );
+  const todayRow = useRef<HTMLTableRowElement | null>(null);
+  const chartData = Object.values(user.goal).map((record) => ({
+    ...record,
+    key: record.name,
+  }));
+
+  useEffect(() => {
+    if (todayRow && todayRow.current)
+      todayRow.current.scrollIntoView({ behavior: "smooth" });
+  }, []);
+
+  const rowRefWrapper = ({ className, ...props }: RowProps) => {
+    if (props["data-row-key"] === formatedToday)
+      return <tr ref={todayRow} className={`${className} today`} {...props} />;
+    return <tr className={className} {...props} />;
+  };
 
   const columns = [
     {
@@ -62,12 +80,13 @@ export const WeightTable: React.FC<{ user: DBUser; review: boolean }> = ({
   return (
     chartData && (
       <Table
+        components={{ body: { row: rowRefWrapper } }}
         dataSource={chartData}
         pagination={false}
         size="small"
         columns={columns}
         bordered
-        scroll={{ y: 600 }}
+        scroll={{ y: 500 }}
       ></Table>
     )
   );

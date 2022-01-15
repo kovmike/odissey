@@ -13,3 +13,7 @@ export interface DBUser {
   user: string;
   username: string;
 }
+export interface RowProps {
+  "data-row-key": string;
+  className: string;
+}
