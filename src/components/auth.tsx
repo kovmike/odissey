@@ -52,7 +52,7 @@ export const AuthForm = () => {
           }}
         />
 
-        {wrongPassword && <span style={{ color: "red" }}>неверные пароль</span>}
+        {wrongPassword && <span style={{ color: "red" }}>неверный пароль</span>}
         <Button
           type="primary"
           onClick={(e) => {
