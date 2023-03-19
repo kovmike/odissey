@@ -5,7 +5,7 @@ import {
   UnlockOutlined,
   LoadingOutlined,
 } from "@ant-design/icons";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router";
 import {
   $errorAuth,
@@ -32,7 +32,7 @@ export const AuthForm = () => {
   }, []);
 
   useEffect(() => {
-    if (!!user) navigate("/", { replace: true });
+    if (user) navigate("/", { replace: true });
   }, [user]);
 
   if (pending)

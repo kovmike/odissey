@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 import {
   AreaChart,
   XAxis,
@@ -17,6 +18,7 @@ export const Chart: React.FC<{ user: DBUser }> = ({ user }) => {
         : { name: point.name, ["цель"]: point.goal, ["факт"]: point.fact }
     );
 
+ 
   if (!user?.startWeight) return <></>;
 
   return (
